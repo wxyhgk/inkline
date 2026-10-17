@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.epub
+*.kfx
+*.azw3
+output/
+.DS_Store
