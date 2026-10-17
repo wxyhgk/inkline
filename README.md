@@ -1,6 +1,6 @@
 # inkline
 
-Markdown → Kindle（EPUB3 / KFX），行内公式精确对齐。
+把带公式的 Markdown 中文手册，变成 Kindle 上能看、能写的电子书。
 
 ## 效果
 
@@ -8,13 +8,21 @@ Markdown → Kindle（EPUB3 / KFX），行内公式精确对齐。
 
 <img src="docs/imgs/layout.png" width="600" alt="桌面端渲染：行内不断行、超宽等比、表格"/>
 
-数学公式进 Kindle 有三道坎：
+## 故事
 
-1. KF8 丢弃内联 SVG，行内公式变空白
-2. 通用转换器（Calibre）丢图片引用，小图撑破行
-3. KFX 行内图默认块级渲染，每个公式独占一行
+起点是把 Multiwfn 官方手册（39MB PDF，全是量子化学公式）做成中文 Kindle 版，放到 Scribe 上边看边写。市面上没有一条路走得通，我们把每个坑都踩了一遍：
 
-inkline 全解了：公式预渲染高清 PNG（白底），直出 KFX，并把行内图改写成 Kindle 原生行内结构（逆向 Send-to-Kindle 官方格式得出）。
+**第一坑：公式变空白。** EPUB 里内联 SVG 公式，KF8 直接丢弃，Kindle 上全是空框。解法：公式预渲染 300dpi PNG 外链。但透明底 PNG 在 Kindle 上渲成黑块——出厂前统一合成白底。
+
+**第二坑：Calibre 丢图。** EPUB→AZW3 经 Calibre，29 张公式图进包但只有 1 张被引用，其余全空白；小文件连正文都丢。这是 Calibre 8 KF8 writer 的 bug，不是我们的文件问题。解法：换 Rust 开源实现 boko，直写 KFX，29/29 全保留。
+
+**第三坑：公式独占行。** boko 把所有 `<img>` 定为块级，行内公式 `文字[公式]文字` 被拆成三行。逆向 Send-to-Kindle 下发的官方 KFX，找到三处差异：image 要嵌进 text 的 content_list、加 `render: inline` 标记、style 写 `width/height/baseline_shift`。boko 代码里符号全有就是没用上——我们写了个 Ion 级后处理 `kfx_patch`，只改两个 entity 内容（不增删，加 entity 会导致 Kindle 拒开），行内不断行。
+
+**第四坑：尺寸与基线。** Kindle 按 PNG 像素显示，无 CSS 缩放——300dpi 高清图显示成 5.7 倍大。按每张图反推 em 写回 style（36 进制资源名映射、字节级 PNG 匹配）；超宽公式去 height 等比缩；基线 `bs = -(h/2-0.25) + 0.2`，Scribe 真机三档盲测调定。
+
+**第五坑：代码块挤成一行。** boko 吃掉 pre 内空白。源头改写：换行转显式 `<br/>`、缩进转 `&nbsp;`，Kindle 模式代码块去背景。
+
+终点：USB 拷进 Scribe，行内公式齐平、显示公式居中、代码换行、手写批注——全有。
 
 ## 安装
 
