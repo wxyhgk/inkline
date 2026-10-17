@@ -14,7 +14,7 @@ Markdown → Kindle（EPUB3 / KFX），行内公式精确对齐。
 2. 通用转换器（Calibre）丢图片引用，小图撑破行
 3. KFX 行内图默认块级渲染，每个公式独占一行
 
-linkine 全解了：公式预渲染高清 PNG（白底），直出 KFX，并把行内图改写成 Kindle 原生行内结构（逆向 Send-to-Kindle 官方格式得出）。
+inkline 全解了：公式预渲染高清 PNG（白底），直出 KFX，并把行内图改写成 Kindle 原生行内结构（逆向 Send-to-Kindle 官方格式得出）。
 
 ## 安装
 
