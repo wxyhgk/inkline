@@ -24,7 +24,19 @@
 
 <img src="docs/imgs/layout.png" width="600" alt="桌面端渲染"/>
 
-## 安装
+## 踩过的开源项目
+
+这一周几乎把 Kindle 生态的开源工具翻了个遍：
+
+- **boko**（Rust，EPUB→KFX 原生写入）：唯一不依赖 Kindle Previewer 的开源 KFX 写入实现。成了我们的底座。但它行内图当块渲染、CSS 对齐全丢——我们写了 Ion 级后处理补上。
+- **Calibre**（ebook-convert EPUB→AZW3）：第一版用的它。后来发现 8.x 的 KF8 writer 丢图片引用（29 张进包只引用 1 张），小文件连正文都丢。弃用，只留它做调试回转。
+- **Kindle Previewer**（Amazon 官方）：转换质量标杆，我们逆向对标的对象。但它是黑盒 GUI，没法进自动化链路；而且它转的行内图一样要调。
+- **KOReader**（越狱阅读器）：功能全，但要越狱 Scribe，丢官方同步。路子太野，没走。
+- **DeDRM_tools / kfxlib（jhowell）**：只管脱壳和校验，不管生成。拿来读 KFX 结构当参考书。
+- **amazon-ion**（Python）：官方 Ion 库，但解不了 KFX 的自定义符号表。只好照着 boko 的 ion.rs 手写了个最小编解码。
+
+结论：没有一个开箱即用。boko 做骨架，缺的肉我们自己长——这就是 inkline。
+
 
 ```bash
 pip install -r requirements.txt   # mistune pygments Pillow
