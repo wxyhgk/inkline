@@ -16,28 +16,26 @@
 
 五个坑，踩完一个来下一个。好几次想砸电脑，想着"算了别搞了"，但都走到这儿了，差这一步，咬咬牙又坐回去了。
 
-现在：一行命令，手册进去，Kindle 电子书出来。公式贴着文字走，代码行行分明，拷进 Scribe 拿起笔就能写。回头看那一周，值了。
+## 时间线
 
-## 效果
-
-<img src="docs/imgs/scribe.png" width="400" alt="Kindle Scribe 真机"/>
-
-<img src="docs/imgs/layout.png" width="600" alt="桌面端渲染"/>
+- **Day 1（10-15）：空白框。** 试 Calibre 转 AZW3，发现丢图弃用；换 boko 直写 KFX，图全了但行内独占行。
+- **Day 1 夜：逆向。** 拿 Send-to-Kindle 下发的官方 KFX 逐字节比对，定位三处差异（嵌套/render/样式），写出 kfx_patch 第一版，不断行了。
+- **Day 2（10-16）：尺寸与基线。** 公式 5.7 倍大→按图反推 em；基线真机三档盲测，定下 +0.2；超宽去 height 等比；多尺寸按图分 style（新增 entity 拒开→改零新增）。
+- **Day 2 夜：代码块。** pre 换行被吃→显式 br/nbsp；去背景。sec-3-21（329 图）全链跑通。
+- **Day 3（10-17）：改名 inkline，写 README，建库推送。**
 
 ## 踩过的开源项目
 
-这一周几乎把 Kindle 生态的开源工具翻了个遍：
+（按踩的顺序）
 
-- **boko**（Rust，EPUB→KFX 原生写入）：唯一不依赖 Kindle Previewer 的开源 KFX 写入实现。成了我们的底座。但它行内图当块渲染、CSS 对齐全丢——我们写了 Ion 级后处理补上。
-- **Calibre**（ebook-convert EPUB→AZW3）：第一版用的它。后来发现 8.x 的 KF8 writer 丢图片引用（29 张进包只引用 1 张），小文件连正文都丢。弃用，只留它做调试回转。
-- **Kindle Previewer**（Amazon 官方）：转换质量标杆，我们逆向对标的对象。但它是黑盒 GUI，没法进自动化链路；而且它转的行内图一样要调。
-- **KOReader**（越狱阅读器）：功能全，但要越狱 Scribe，丢官方同步。路子太野，没走。
-- **DeDRM_tools / kfxlib（jhowell）**：只管脱壳和校验，不管生成。拿来读 KFX 结构当参考书。
-- **amazon-ion**（Python）：官方 Ion 库，但解不了 KFX 的自定义符号表。只好照着 boko 的 ion.rs 手写了个最小编解码。
-
-结论：没有一个开箱即用。boko 做骨架，缺的肉我们自己长——这就是 inkline。
+- **Calibre**：第一个用的，KF8 writer 丢引用，弃。
+- **boko**：底座，行内/对齐缺的肉自己长。
+- **Kindle Previewer**：对标对象，黑盒进不了链路。
+- **KOReader / DeDRM / kfxlib / amazon-ion**：路子野/只管一半/解不了，拿来当参考书。
 
 
+
+## 安装
 ```bash
 pip install -r requirements.txt   # mistune pygments Pillow
 cargo install boko                # EPUB → KFX（需 Rust）
