@@ -74,7 +74,10 @@ inkline_lib/
   kfx_symbols.py YJ 符号表（852）
 ```
 
+## 手写
+
+USB 侧载的 KFX 在 Scribe 上可手写（真机验证）。
+
 ## 局限
 
-- USB 侧载的 KFX 在 Scribe 上不能手写（无书写层，平台限制）。要手写走 Send to Kindle 推 EPUB。
 - 超宽行内公式（>30em）按 max-width 等比缩小，可能偏小。
